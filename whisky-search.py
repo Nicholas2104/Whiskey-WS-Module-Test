@@ -1,19 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-start_time = time.time()
 # Queremos coletar adequadamente todos os dados de todos os produtos de certa subcategoria
 # Isso pode ser feito iternado sobre cada pagina do site, ate nao haver mais conteudo
 # a cada iteracao acessamso a pagina individual de cada produto e lemos suas caracteristicas
 # Caracteristicas: Nome, preco, avaliacao, numero de avaliacoes, conteudo escrito da avaliacoes
 # depois de coletar todas a caracteristicas podemos armazenar estas informacoes num dicionario onde a chave e o nome do produto
-def collect_product_info(default_url): # temos como parametro a url basica do site
+def collect_all_product_info(default_url): # temos como parametro a url basica do site
     all_product_info = dict()
     page_num = 1
     while True:
         print(page_num)
         url = default_url+str(page_num) # esepecificamos qual pagina queremos acessar
+        start_time = time.time()
         main_page = requests.get(url)
+        print("--- %s seconds ---" % (time.time() - start_time))
         main_page_soup = BeautifulSoup(main_page.text, "lxml")
         if main_page_soup.find_all("div", class_="main-content") == []: # Se a a pagina n tiver mais conteudo saimos do loop, pois revistamos todo o site
             break
@@ -54,5 +55,5 @@ def collect_product_info(default_url): # temos como parametro a url basica do si
     return all_product_info
 
 tequila_page_url_default = "https://sipwhiskey.com/collections/rye-whiskey?page="
-all_product_links = collect_product_info(tequila_page_url_default)
-print("--- %s seconds ---" % (time.time() - start_time))
+all_product_links = collect_all_product_info(tequila_page_url_default)
+
